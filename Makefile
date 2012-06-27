@@ -1,6 +1,7 @@
 SRCDIR	= ./source
 TESTDIR	= ./test
-SRC 	=	$(SRCDIR)/sqlfactory.cpp \
+SRC 	=	$(SRCDIR)/sqlfactory.cpp	\
+		$(SRCDIR)/utils.cpp		\
 		$(TESTDIR)/main.cpp
 
 OBJS	= $(SRC:.cpp=.o)
