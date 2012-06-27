@@ -48,9 +48,9 @@ namespace upo
       sql::Driver* _driver;
       sql::Connection* _connection;
     };
-  }
-}
-
 # endif // UPO_MYSQL
+
+  } // namespace db
+} // namespace upo
 
 #endif // __SQL_FACTORY__
