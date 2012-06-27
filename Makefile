@@ -8,7 +8,7 @@ OBJS	= $(SRC:.cpp=.o)
 NAME	= upo
 
 INCLUDE	= -I./include
-INCLUDE	+= -I/home/myrtille/Work/mysql-connector/include
+INCLUDE	+= -I../mysql-connector/include
 
 LFLAGS	= -lmysqlcppconn-static
 LFLAGS	+= -L/usr/lib/i386-linux-gnu/ -lmysqlclient
