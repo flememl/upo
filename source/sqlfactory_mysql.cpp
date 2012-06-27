@@ -31,8 +31,18 @@ sql::ResultSet* MySQL::execute(string query)
 {
   cout << "MySQL execute" << endl;
   sql::Statement* statement = this->_connection->createStatement();
+  sql::ResultSet* result = NULL;
 
-  return statement->executeQuery(query);
+  upo::print_debug(query);
+  try
+    {
+      result = statement->executeQuery(query);
+    }
+  catch (sql::SQLException &e)
+    {
+      this->error(e, __FILE__, __LINE__, __func__, query);
+    }
+  return result;
 }
 
 void MySQL::close()
@@ -50,7 +60,7 @@ void MySQL::commit()
   this->_connection->commit();
 }
 
-void MySQL::error(sql::SQLException e, string file, int line, string func)
+void MySQL::error(sql::SQLException e, string file, int line, string func, string query)
 {
   if (e.getErrorCode() == 0)
     return ;
@@ -59,11 +69,12 @@ void MySQL::error(sql::SQLException e, string file, int line, string func)
   msg << " (" << func << ") on line " << line << endl;
   msg << "ERROR: " << e.what();
   msg << " (MySQL error code: " << e.getErrorCode();
-  msg << ", SQLState: " << e.getSQLState() + ")";
+  msg << ", SQLState: " << e.getSQLState() + ")" << endl;
+  msg << "ERROR: Query: " << query;
   upo::print_error(msg.str());
 }
 
-void MySQL::warning(sql::SQLException e, string file, int line, string func)
+void MySQL::warning(sql::SQLException e, string file, int line, string func, string query)
 {
   if (e.getErrorCode() == 0)
     return ;
@@ -72,30 +83,55 @@ void MySQL::warning(sql::SQLException e, string file, int line, string func)
   msg << " (" << func << ") on line " << line << endl;
   msg << "WARNING: " << e.what();
   msg << " (MySQL error code: " << e.getErrorCode();
-  msg << ", SQLState: " << e.getSQLState() + ")";
+  msg << ", SQLState: " << e.getSQLState() + ")" << endl;
+  msg << "WARNING: Query: " << query;
   upo::print_warning(msg.str());
 }
 
 bool MySQL::create_table(string table_name, bool safe/*=true*/)
 {
   cout << "MySQL create_table" << endl;
-  string query = "CREATE TABLE ";
+  ostringstream query;
   bool result = false;
 
+  query << "CREATE TABLE ";
   if (safe)
-    query.append("IF NOT EXISTS ");
-  query.append( SSTR(table_name) );
-  query.append(" (`id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY);");
+    query << "IF NOT EXISTS ";
+  query << SSTR(table_name) << " (`id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY)" << ENDQ;
   try
     {
-      this->execute(query);
+      this->execute(query.str());
       result = true;
     }
   catch (sql::SQLException &e)
     {
       if (e.getErrorCode() == 0)
 	result = true;
-      this->warning(e, __FILE__, __LINE__, __func__);
+      this->warning(e, __FILE__, __LINE__, __func__, query.str());
+    }
+  return result;
+}
+
+bool MySQL::create_column(string table_name, string column_name, string type, int length/*=0*/)
+{
+  cout << "MySQL create_column" << endl;
+  ostringstream query;
+  bool result = false;
+
+  query << "ALTER TABLE " << SSTR(table_name) << " ADD COLUMN ( " << SSTR(column_name) << " " << type;
+  if (length > 0)
+    query << "(" << length << ")";
+  query << " )" << ENDQ;
+  try
+    {
+      this->execute(query.str());
+      result = true;
+    }
+  catch (sql::SQLException &e)
+    {
+      if (e.getErrorCode() == 0)
+	result = true;
+      this->warning(e, __FILE__, __LINE__, __func__, query.str());
     }
   return result;
 }
@@ -103,22 +139,44 @@ bool MySQL::create_table(string table_name, bool safe/*=true*/)
 bool MySQL::delete_table(string table_name, bool safe/*=true*/)
 {
   cout << "MySQL delete_table" << endl;
-  string query = "DROP TABLE ";
+  ostringstream query;
   bool result = false;
 
+  query << "DROP TABLE ";
   if (safe)
-    query.append(" IF EXISTS ");
-  query.append( SSTR(table_name) );
+    query << "IF EXISTS ";
+  query << SSTR(table_name) << ENDQ;
   try
     {
-      this->execute(query);
+      this->execute(query.str());
       result = true;
     }
   catch (sql::SQLException &e)
     {
       if (e.getErrorCode() == 0)
 	result = true;
-      this->error(e, __FILE__, __LINE__, __func__);
+      this->error(e, __FILE__, __LINE__, __func__, query.str());
+    }
+  return result;
+}
+
+bool MySQL::delete_column(string table_name, string column_name)
+{
+  cout << "MySQL delete_column" << endl;
+  ostringstream query;
+  bool result = false;
+
+  query << "ALTER TABLE " << SSTR(table_name) << " DROP COLUMN " << SSTR(column_name) << ENDQ;
+  try
+    {
+      this->execute(query.str());
+      result = true;
+    }
+  catch (sql::SQLException &e)
+    {
+      if (e.getErrorCode() == 0)
+	result = true;
+      this->warning(e, __FILE__, __LINE__, __func__, query.str());
     }
   return result;
 }

@@ -10,7 +10,7 @@
 # ifdef UPO_MYSQL
 #  include "cppconn/exception.h"
 #  include "cppconn/resultset.h"
-# endif UPO_MYSQL
+# endif // UPO_MYSQL
 
 // to safely specify table names or column names, not to be confounded with SQL keywords
 # define SSTR(s) "`" + s + "`"
@@ -29,15 +29,15 @@ namespace upo
       virtual sql::ResultSet* execute(std::string query) = 0;
       virtual void close() = 0;
       virtual void commit() = 0;
-      virtual void error(sql::SQLException e, std::string file, int line, std::string func) = 0;
-      virtual void warning(sql::SQLException e, std::string file, int line, std::string func) = 0;
+      virtual void error(sql::SQLException e, std::string file, int line, std::string func, std::string query) = 0;
+      virtual void warning(sql::SQLException e, std::string file, int line, std::string func, std::string query) = 0;
 
       virtual bool create_table(std::string table_name, bool safe=true) = 0;
-      // virtual bool create_column() = 0;
+      virtual bool create_column(std::string table_name, std::string column_name, std::string type, int length=0) = 0;
       // virtual bool alter_table() = 0;
       // virtual bool alter_column() = 0;
       virtual bool delete_table(std::string table_name, bool safe=true) = 0;
-      // virtual bool delete_column() = 0;
+      virtual bool delete_column(std::string table_name, std::string column_name) = 0;
     };
   } // namespace db
 } // namespace upo
