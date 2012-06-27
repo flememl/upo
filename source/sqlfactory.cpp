@@ -1,6 +1,7 @@
 #include "sqlfactory.hpp"
 
 using namespace std;
+using namespace upo::db;
 
 SQLObject* SQLObject::sql()
 {
@@ -41,6 +42,7 @@ sql::ResultSet* MySQL::execute(string query)
     {
       this->error(e, __FILE__, __LINE__, __func__);
     }
+  return NULL;
 }
 
 void MySQL::close()
