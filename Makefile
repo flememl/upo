@@ -1,6 +1,7 @@
 SRCDIR	= ./source
 TESTDIR	= ./test
 SRC 	=	$(SRCDIR)/sqlfactory.cpp	\
+		$(SRCDIR)/sqlfactory_mysql.cpp	\
 		$(SRCDIR)/utils.cpp		\
 		$(TESTDIR)/main.cpp
 
