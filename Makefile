@@ -10,7 +10,7 @@ NAME	= upo
 INCLUDE	= -I./include
 INCLUDE	+= -I../mysql-connector/include
 
-LFLAGS	= -lmysqlcppconn-static
+LFLAGS	= -L/export/expts/MySQLConnectorC++/lib/ -lmysqlcppconn-static
 LFLAGS	+= -L/usr/lib/i386-linux-gnu/ -lmysqlclient
 
 CFLAGS	= -W -Wall
