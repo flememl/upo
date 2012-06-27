@@ -69,7 +69,7 @@ void MySQL::error(sql::SQLException e, string file, int line, string func, strin
   msg << " (" << func << ") on line " << line << endl;
   msg << "ERROR: " << e.what();
   msg << " (MySQL error code: " << e.getErrorCode();
-  msg << ", SQLState: " << e.getSQLState() + ")" << endl;
+  msg << ", SQLState: " << e.getSQLState() << ")" << endl;
   msg << "ERROR: Query: " << query;
   upo::print_error(msg.str());
 }
@@ -83,7 +83,7 @@ void MySQL::warning(sql::SQLException e, string file, int line, string func, str
   msg << " (" << func << ") on line " << line << endl;
   msg << "WARNING: " << e.what();
   msg << " (MySQL error code: " << e.getErrorCode();
-  msg << ", SQLState: " << e.getSQLState() + ")" << endl;
+  msg << ", SQLState: " << e.getSQLState() << ")" << endl;
   msg << "WARNING: Query: " << query;
   upo::print_warning(msg.str());
 }
