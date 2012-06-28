@@ -9,10 +9,10 @@ INCLUDE	= -I.
 INCLUDE	+= -I../include
 INCLUDE	+= -I../../mysql-connector/include
 
-LFLAGS	= -L/export/expts/MySQLConnectorC++/lib/ -lmysqlcppconn-static
+LFLAGS	= -L.. -lupo
+LFLAGS	+= -L/export/expts/MySQLConnectorC++/lib/ -lmysqlcppconn-static
 #LFLAGS	= -L/usr/local/lib/ -lmysqlcppconn-static
 LFLAGS	+= -L/usr/lib/i386-linux-gnu/ -lmysqlclient
-LFLAGS	+= -L.. -lupo
 
 CFLAGS	= -W -Wall
 CFLAGS	+= -Wlong-long -Wunused-parameter

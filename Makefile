@@ -22,7 +22,7 @@ CC	= g++
 AR	= ar
 
 $(NAME): $(OBJS)
-	$(AR) -rs $@ $(OBJS)
+	$(AR) -rvcs $@ $(OBJS)
 
 all:	$(NAME)
 
