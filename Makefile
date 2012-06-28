@@ -1,19 +1,16 @@
+TESTS	= test-upo
+
 SRCDIR	= ./source
-TESTDIR	= ./test
 SRC 	=	$(SRCDIR)/sqlfactory.cpp	\
 		$(SRCDIR)/sqlfactory_mysql.cpp	\
-		$(SRCDIR)/utils.cpp		\
-		$(TESTDIR)/main.cpp
+		$(SRCDIR)/utils.cpp
 
 OBJS	= $(SRC:.cpp=.o)
 
-NAME	= upo
+NAME	= libupo.a
 
 INCLUDE	= -I./include
 INCLUDE	+= -I../mysql-connector/include
-
-LFLAGS	= -L/export/expts/MySQLConnectorC++/lib/ -lmysqlcppconn-static
-LFLAGS	+= -L/usr/lib/i386-linux-gnu/ -lmysqlclient
 
 CFLAGS	= -W -Wall
 CFLAGS	+= -Wlong-long -Wunused-parameter
@@ -22,9 +19,10 @@ CFLAGS 	+= $(INCLUDE)
 CFLAGS	+= -DUPO_MYSQL -DSQL_ENGINE=MySQL
 
 CC	= g++
+AR	= ar
 
 $(NAME): $(OBJS)
-	$(CC) -o $@ $(OBJS) $(LFLAGS)
+	$(AR) -rs $@ $(OBJS)
 
 all:	$(NAME)
 
@@ -35,13 +33,11 @@ clean:
 	rm -rf $(OBJS) *~
 	rm -rf *.o
 
-bclean:
-	rm -rf *backup*
-
-fclean: clean bclean
+fclean: clean
 	rm -rf $(NAME)
 
 re:	fclean all
 
-backup:
-	tar cvf backup_upo`date "+%Y%m%d%H%M%S"`.tar *.c *.h Makefile
+test:	$(TESTS)
+$(TESTS):
+	make -C test
