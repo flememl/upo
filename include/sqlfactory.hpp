@@ -20,12 +20,21 @@ namespace upo
 {
   namespace db
   {
+    struct database_init
+    {
+      std::string server;
+      std::string port;
+      std::string user;
+      std::string pwd;
+      std::string name;
+    };
+
     class SQLObject
     {
     public:
       static SQLObject* sql();
       virtual ~SQLObject() {};
-      virtual void connect(std::string url, std::string user, std::string pwd, std::string db) = 0;
+      virtual void connect(database_init& db) = 0;
       virtual sql::ResultSet* execute(std::string query) = 0;
       virtual void close() = 0;
       virtual void commit() = 0;

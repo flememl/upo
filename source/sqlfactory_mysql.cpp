@@ -19,12 +19,14 @@ MySQL::~MySQL()
   delete this->_connection;
 }
 
-void MySQL::connect(string url, string user, string pwd, string db)
+void MySQL::connect(database_init& db)
 {
+  string host = db.server + ":" + db.port;
+
   cout << "MySQL connect" << endl;
-  this->_connection = this->_driver->connect(url, user, pwd);
+  this->_connection = this->_driver->connect(host, db.user, db.pwd);
   this->_connection->setAutoCommit(0);
-  this->_connection->setSchema(db);
+  this->_connection->setSchema(db.name);
 }
 
 sql::ResultSet* MySQL::execute(string query)

@@ -19,7 +19,7 @@ namespace upo
     public:
       MySQL();
       ~MySQL();
-      virtual void connect(std::string url, std::string user, std::string pwd, std::string db);
+      virtual void connect(database_init& db);
       virtual sql::ResultSet* execute(std::string query);
       virtual void close();
       virtual void commit();

@@ -4,25 +4,16 @@
 # include <string>
 # include "sqlfactory.hpp"
 
-struct database_init
-{
-  std::string server;
-  std::string port;
-  std::string user;
-  std::string pwd;
-  std::string name;
-};
-
 class TestCase
 {
 public:
   TestCase();
   ~TestCase();
-  void init(database_init* db_init);
+  void init(upo::db::database_init* db_init);
   upo::db::SQLObject* sql_obj();
-  database_init* database();
+  upo::db::database_init* database();
 private:
-  database_init* _db;
+  upo::db::database_init* _db;
   upo::db::SQLObject* _sql_obj;
 };
 

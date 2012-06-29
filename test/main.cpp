@@ -3,7 +3,7 @@
 int main(int, char**)
 {
   TestCase tc;
-  database_init db;
+  upo::db::database_init db;
 
   db.server = "localhost";
   db.port = "3307";

@@ -10,7 +10,7 @@ TestCase::~TestCase()
   delete this->_sql_obj;
 }
 
-void TestCase::init(database_init* db_init)
+void TestCase::init(upo::db::database_init* db_init)
 {
   this->_db = db_init;
 }
@@ -20,16 +20,14 @@ upo::db::SQLObject* TestCase::sql_obj()
   return this->_sql_obj;
 }
 
-database_init* TestCase::database()
+upo::db::database_init* TestCase::database()
 {
   return this->_db;
 }
 
 bool test_db_connect(TestCase* tc)
 {
-  std::string host = tc->database()->server + ":" + tc->database()->port;
-
-  tc->sql_obj()->connect(host, tc->database()->user, tc->database()->pwd, tc->database()->name);
+  tc->sql_obj()->connect(*(tc->database()));
   return true;
 }
 
