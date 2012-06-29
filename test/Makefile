@@ -1,11 +1,12 @@
-SRCDIR	= .
-SRC 	=	$(SRCDIR)/main.cpp
+SRCDIR	= ./source
+SRC 	=	main.cpp	\
+		$(SRCDIR)/test.cpp
 
 OBJS	= $(SRC:.cpp=.o)
 
 NAME	= test-upo
 
-INCLUDE	= -I.
+INCLUDE	= -I./include
 INCLUDE	+= -I../include
 INCLUDE	+= -I../../mysql-connector/include
 

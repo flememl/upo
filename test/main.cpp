@@ -1,23 +1,26 @@
-#include "sqlfactory.hpp"
+#include "test.hpp"
 
 int main(int, char**)
 {
-  upo::db::SQLObject* sql_obj = upo::db::SQLObject::sql();
-  sql_obj->connect("localhost:3307", "root", "root", "test");
-  // XXX "City" will later be an entity
-  sql_obj->create_table("City");
-  sql_obj->commit();
-  sql_obj->create_column("City", "name", "VARCHAR", 256);
-  sql_obj->create_column("City", "zipcode", "INT", 5);
-  sql_obj->create_column("City", "country", "VARCHAR", 3);
-  sql_obj->commit();
-  // XXX INSERT will later be replaced by create_entity
-  sql_obj->execute("INSERT INTO `City` (`name`, `zipcode`, `country`) VALUES ('test', 15000, 'FRA');");
-  sql_obj->commit();
-  sql_obj->delete_column("City", "country");
-  sql_obj->delete_table("City");
-  sql_obj->commit();
-  sql_obj->close();
-  delete sql_obj;
+  TestCase tc;
+  database_init db;
+
+  db.server = "localhost";
+  db.port = "3307";
+  db.user = "root";
+  db.pwd = "root";
+  db.name = "test";
+  tc.init(&db);
+  // tests routine
+  test_db_connect(&tc);
+  test_db_create_table(&tc);
+  test_db_create_column(&tc);
+  test_db_create_entity(&tc);
+  test_db_delete_entity(&tc);
+  test_db_delete_column(&tc);
+  test_db_delete_table(&tc);
+  test_db_close(&tc);
+  // end tests routine
+
   return EXIT_SUCCESS;
 }
