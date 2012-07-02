@@ -3,6 +3,7 @@
 
 # include <iostream>
 # include <string>
+# include <vector>
 
 # define COLOR_TEXT(X) "\033["X"m"
 # define ERROR_TEXT COLOR_TEXT("31") // red
@@ -19,6 +20,21 @@ namespace upo
   void print_info(std::string msg);
   void print_deprecated(std::string msg);
   void print_debug(std::string msg);
+
+  template<class T>
+  T join(std::vector<T> strs, T separator)
+  {
+    T str;
+    typename std::vector<T>::iterator it;
+
+    for (it = strs.begin() ; it != strs.end() ; ++it)
+      {
+	if (!str.empty())
+	  str.append(separator);
+	str.append(*it);
+      }
+    return str;
+  }
 } // namespace upo
 
 #endif // __UTILS__

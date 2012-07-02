@@ -138,6 +138,37 @@ bool MySQL::create_column(string table_name, string column_name, string type, in
   return result;
 }
 
+bool MySQL::create_row(string table_name, map<string,string> values)
+{
+  cout << "MySQL create_row" << endl;
+  ostringstream query;
+  vector<string> keys, vals;
+  map<string,string>::iterator it;
+  bool result = false;
+
+  for (it = values.begin() ; it != values.end() ; ++it)
+    {
+      keys.push_back( SSTR((*it).first) );
+      vals.push_back( QSTR((*it).second) );
+    }
+  // XXX use a prepared statement when bridge from C++ to SQL type is available
+  query << "INSERT INTO " << SSTR(table_name) << " ( ";
+  query << join(keys, string(", ")) << " ) VALUES ( "  << join(vals, string(", "));
+  query << " )" << ENDQ;
+  try
+    {
+      this->execute(query.str());
+      result = true;
+    }
+  catch (sql::SQLException &e)
+    {
+      if (e.getErrorCode() == 0)
+	result = true;
+      this->warning(e, __FILE__, __LINE__, __func__, query.str());
+    }
+  return result;
+}
+
 bool MySQL::delete_table(string table_name, bool safe/*=true*/)
 {
   cout << "MySQL delete_table" << endl;
@@ -169,6 +200,33 @@ bool MySQL::delete_column(string table_name, string column_name)
   bool result = false;
 
   query << "ALTER TABLE " << SSTR(table_name) << " DROP COLUMN " << SSTR(column_name) << ENDQ;
+  try
+    {
+      this->execute(query.str());
+      result = true;
+    }
+  catch (sql::SQLException &e)
+    {
+      if (e.getErrorCode() == 0)
+	result = true;
+      this->warning(e, __FILE__, __LINE__, __func__, query.str());
+    }
+  return result;
+}
+
+bool MySQL::delete_row(string table_name, map<string,string> values)
+{
+  cout << "MySQL delete_row" << endl;
+  ostringstream query;
+  vector<string> filters;
+  map<string,string>::iterator it;
+  bool result = false;
+
+  for (it = values.begin() ; it != values.end() ; ++it)
+    filters.push_back(SSTR((*it).first) + " = " + QSTR((*it).second));
+  // XXX use a prepared statement when bridge from C++ to SQL type is available
+  query << "DELETE FROM " << SSTR(table_name) << " WHERE ";
+  query << join(filters, string(" AND ")) << ENDQ;
   try
     {
       this->execute(query.str());

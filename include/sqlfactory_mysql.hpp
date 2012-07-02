@@ -28,10 +28,12 @@ namespace upo
 
       virtual bool create_table(std::string table_name, bool safe=true);
       virtual bool create_column(std::string table_name, std::string column_name, std::string type, int length=0);
+      virtual bool create_row(std::string table_name, std::map<std::string,std::string> values);
       // virtual bool alter_table();
       // virtual bool alter_column();
       virtual bool delete_table(std::string table_name, bool safe=true);
       virtual bool delete_column(std::string table_name, std::string column_name);
+      virtual bool delete_row(std::string table_name, std::map<std::string,std::string> values);
     private:
       sql::Driver* _driver;
       sql::Connection* _connection;

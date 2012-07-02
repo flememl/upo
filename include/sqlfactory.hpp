@@ -3,6 +3,7 @@
 
 # include <iostream>
 # include <string>
+# include <map>
 # include <sstream>
 # include <cstdlib>
 
@@ -14,6 +15,7 @@
 
 // to safely specify table names or column names, not to be confounded with SQL keywords
 # define SSTR(s) "`" + s + "`"
+# define QSTR(s) "\"" + s + "\""
 # define ENDQ    ";"
 
 namespace upo
@@ -43,10 +45,12 @@ namespace upo
 
       virtual bool create_table(std::string table_name, bool safe=true) = 0;
       virtual bool create_column(std::string table_name, std::string column_name, std::string type, int length=0) = 0;
+      virtual bool create_row(std::string table_name, std::map<std::string,std::string> values) = 0;
       // virtual bool alter_table() = 0;
       // virtual bool alter_column() = 0;
       virtual bool delete_table(std::string table_name, bool safe=true) = 0;
       virtual bool delete_column(std::string table_name, std::string column_name) = 0;
+      virtual bool delete_row(std::string table_name, std::map<std::string,std::string> values) = 0;
     };
   } // namespace db
 } // namespace upo
