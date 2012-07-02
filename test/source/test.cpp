@@ -25,15 +25,15 @@ upo::db::database_init* TestCase::database()
   return this->_db;
 }
 
-bool test_db_connect(TestCase* tc)
+bool DBTestCase::test_db_connect()
 {
-  tc->sql_obj()->connect(*(tc->database()));
+  this->sql_obj()->connect(*(this->database()));
   return true;
 }
 
-bool test_db_close(TestCase* tc)
+bool DBTestCase::test_db_close()
 {
-  tc->sql_obj()->close();
+  this->sql_obj()->close();
   return true;
 }
 
@@ -41,19 +41,19 @@ bool test_db_close(TestCase* tc)
 ** DB Table tests
 */
 
-bool test_db_create_table(TestCase* tc)
+bool DBTestCase::test_db_create_table()
 {
   // XXX "City" will later be an entity
-  tc->sql_obj()->create_table("City");
-  tc->sql_obj()->commit();
+  this->sql_obj()->create_table("City");
+  this->sql_obj()->commit();
   return true;
 }
 
-bool test_db_delete_table(TestCase* tc)
+bool DBTestCase::test_db_delete_table()
 {
   // XXX "City" will later be an entity
-  tc->sql_obj()->delete_table("City");
-  tc->sql_obj()->commit();
+  this->sql_obj()->delete_table("City");
+  this->sql_obj()->commit();
   return true;
 }
 
@@ -61,21 +61,21 @@ bool test_db_delete_table(TestCase* tc)
 ** DB Column tests
 */
 
-bool test_db_create_column(TestCase* tc)
+bool DBTestCase::test_db_create_column()
 {
-  tc->sql_obj()->create_column("City", "name", "VARCHAR", 256);
-  tc->sql_obj()->create_column("City", "zipcode", "INT", 5);
-  tc->sql_obj()->create_column("City", "country", "VARCHAR", 3);
-  tc->sql_obj()->commit();
+  this->sql_obj()->create_column("City", "name", "VARCHAR", 256);
+  this->sql_obj()->create_column("City", "zipcode", "INT", 5);
+  this->sql_obj()->create_column("City", "country", "VARCHAR", 3);
+  this->sql_obj()->commit();
   return true;
 }
 
-bool test_db_delete_column(TestCase* tc)
+bool DBTestCase::test_db_delete_column()
 {
-  tc->sql_obj()->delete_column("City", "country");
-  tc->sql_obj()->delete_column("City", "zipcode");
-  tc->sql_obj()->delete_column("City", "name");
-  tc->sql_obj()->commit();
+  this->sql_obj()->delete_column("City", "country");
+  this->sql_obj()->delete_column("City", "zipcode");
+  this->sql_obj()->delete_column("City", "name");
+  this->sql_obj()->commit();
   return true;
 }
 
@@ -83,18 +83,27 @@ bool test_db_delete_column(TestCase* tc)
 ** DB Entity tests
 */
 
-bool test_db_create_entity(TestCase* tc)
+bool DBTestCase::test_db_create_entity()
 {
+  std::map<std::string,std::string> values;
+
+  values.insert(std::pair<std::string,std::string>("name", "test"));
+  values.insert(std::pair<std::string,std::string>("zipcode", "15000"));
+  values.insert(std::pair<std::string,std::string>("country", "FRA"));
   // XXX INSERT will later be replaced by create_entity
-  tc->sql_obj()->execute("INSERT INTO `City` (`name`, `zipcode`, `country`) VALUES ('test', 15000, 'FRA');");
-  tc->sql_obj()->commit();
+  this->sql_obj()->create_row("City", values);
+  this->sql_obj()->commit();
   return true;
 }
 
-bool test_db_delete_entity(TestCase* tc)
+bool DBTestCase::test_db_delete_entity()
 {
+  std::map<std::string,std::string> values;
+
+  values.insert(std::pair<std::string,std::string>("name", "test"));
+  values.insert(std::pair<std::string,std::string>("country", "FRA"));
   // XXX DELETE will later be replaced by delete_entity
-  tc->sql_obj()->execute("DELETE FROM `City` WHERE `name` = 'test';");
-  tc->sql_obj()->commit();
+  this->sql_obj()->delete_row("City", values);
+  this->sql_obj()->commit();
   return true;
 }

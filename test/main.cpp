@@ -2,7 +2,7 @@
 
 int main(int, char**)
 {
-  TestCase tc;
+  DBTestCase tc;
   upo::db::database_init db;
 
   db.server = "localhost";
@@ -12,14 +12,14 @@ int main(int, char**)
   db.name = "test";
   tc.init(&db);
   // tests routine
-  test_db_connect(&tc);
-  test_db_create_table(&tc);
-  test_db_create_column(&tc);
-  test_db_create_entity(&tc);
-  test_db_delete_entity(&tc);
-  test_db_delete_column(&tc);
-  test_db_delete_table(&tc);
-  test_db_close(&tc);
+  tc.test_db_connect();
+  tc.test_db_create_table();
+  tc.test_db_create_column();
+  tc.test_db_create_entity();
+  tc.test_db_delete_entity();
+  tc.test_db_delete_column();
+  tc.test_db_delete_table();
+  tc.test_db_close();
   // end tests routine
 
   return EXIT_SUCCESS;

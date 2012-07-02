@@ -17,13 +17,17 @@ private:
   upo::db::SQLObject* _sql_obj;
 };
 
-bool test_db_connect(TestCase* tc);
-bool test_db_close(TestCase* tc);
-bool test_db_create_table(TestCase* tc);
-bool test_db_delete_table(TestCase* tc);
-bool test_db_create_column(TestCase* tc);
-bool test_db_delete_column(TestCase* tc);
-bool test_db_create_entity(TestCase* tc);
-bool test_db_delete_entity(TestCase* tc);
+class DBTestCase : public TestCase
+{
+public:
+  bool test_db_connect();
+  bool test_db_close();
+  bool test_db_create_table();
+  bool test_db_delete_table();
+  bool test_db_create_column();
+  bool test_db_delete_column();
+  bool test_db_create_entity();
+  bool test_db_delete_entity();
+};
 
 #endif // __TEST_HPP__
