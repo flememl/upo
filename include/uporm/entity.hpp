@@ -13,6 +13,8 @@ namespace upo
       virtual Entity();
       virtual Entity(int id);
       virtual ~Entity();
+      virtual bool commit();
+      virtual bool delete();
 
       // static methods
       static virtual Entity* get();

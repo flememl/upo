@@ -30,14 +30,14 @@ namespace upo
       {
       }
 
-    private:
+    protected:
       static const __cardinality__ = NONE;
     };
 
     template<class A, class B>
     class OneToOne : public Relation<A,B>
     {
-    private:
+    protected:
       static const __cardinality__ = Relation<A,B>::__cardinality__ | RUNIQUE | LUNIQUE;
       HAS_ONE(A) _from;
       HAS_ONE(B) _to;
@@ -46,7 +46,7 @@ namespace upo
     template<class A, class B>
     class OneToMany : public Relation<A,B>
     {
-    private:
+    protected:
       static const __cardinality__ = Relation<A,B>::__cardinality__ | RUNIQUE;
       HAS_ONE(A) _from;
       HAS_MANY(B) _to;
@@ -55,7 +55,7 @@ namespace upo
     template<class A, class B>
     class ManyToOne : public Relation<A,B>
     {
-    private:
+    protected:
       static const __cardinality__ = Relation<A,B>::__cardinality__ | LUNIQUE;
       HAS_MANY(A) _from;
       HAS_ONE(B) _to;
@@ -64,7 +64,7 @@ namespace upo
     template<class A, class B>
     class ManyToMany : public Relation<A,B>
     {
-    private:
+    protected:
       HAS_MANY(A) _from;
       HAS_MANY(B) _to;
     };
