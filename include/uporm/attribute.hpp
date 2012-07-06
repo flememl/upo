@@ -1,6 +1,8 @@
 #ifndef __UPORM_ATTRIBUTE__
 # define __UPORM_ATTRIBUTE__
 
+# include <string>
+
 namespace upo
 {
   namespace orm
