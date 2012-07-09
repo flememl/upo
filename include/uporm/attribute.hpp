@@ -55,6 +55,26 @@ namespace upo
       static const std::string type = "INT";
       static const std::string type_suffix = "UNSIGNED";
     };
+
+    class FStrAttribute : Attribute<std::string>
+    {
+    public:
+      FStrAttribute(std::string d_val, int length=24, Definition def=NONE); // Call parent's ctor
+      static const std::string type = "CHAR";
+    };
+
+    class StrAttribute : Attribute<std::string>
+    {
+    public:
+      StrAttribute(std::string d_val, int length=256, Definition def=NONE); // Call parent's ctor
+      static const std::string type = "VARCHAR";
+    };
+
+    class TextAttribute : Attribute<std::string>
+    {
+    public:
+      static const std::string type = "TEXT";
+    };
   }
 }
 
