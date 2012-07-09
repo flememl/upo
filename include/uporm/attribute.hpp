@@ -7,11 +7,17 @@ namespace upo
 {
   namespace orm
   {
+    enum Definition {
+      NONE = 0,
+      REQUIRED = 1, // Column is NOT NULL
+      UNIQUE   = 2  // Column is UNIQUE
+    };
+
     template<typename T>
     class Attribute
     {
     public:
-      virtual Attribute(T d_val, bool required, bool unique, int length=0, int decimals=0) :
+      virtual Attribute(T d_val, Definition def=NONE, int length=0, int decimals=0) :
 	_value(d_val), _length(length), _decimals(decimals)
       {}
       virtual ~Attribute() {}
