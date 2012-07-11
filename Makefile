@@ -3,7 +3,8 @@ TESTS	= test-upo
 SRCDIR	= ./source
 SRC 	=	$(SRCDIR)/sqlfactory.cpp	\
 		$(SRCDIR)/sqlfactory_mysql.cpp	\
-		$(SRCDIR)/utils.cpp
+		$(SRCDIR)/utils.cpp		\
+		$(SRCDIR)/uporm/entity.cpp
 
 OBJS	= $(SRC:.cpp=.o)
 

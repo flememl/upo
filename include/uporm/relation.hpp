@@ -1,18 +1,13 @@
 #ifndef __UPORM_RELATION__
 # define __UPORM_RELATION__
 
-# include <list>
 # include <string>
+# include "uporm/operand.hpp"
 
 namespace upo
 {
   namespace orm
   {
-# define ONE(x) x*
-# define MANY(x) std::list<x*>
-# define HAS_ONE(x) ONE(x)
-# define HAS_MANY(x) MANY(x)
-
     enum Cardinality {
       NONE = 0,
       LMANDATORY = 1, // Left  operand is mandatory
@@ -22,70 +17,72 @@ namespace upo
     };
 
     enum Position {
-      NONE = 0,
       LEFT  = 1,
       RIGHT = 2
     };
 
     // XXX use a composite enum
 
-    template<class A, class B>
+    template<class L, class R, class A, class B>
     class Relation
     {
     public:
-      virtual Relation()
+      Relation()
       {
 	// XXX use this->__cardinality__
-      }
-
-      virtual Relation(A* from, std::string reverse)
-      {
-	this->_from = from;
-	this->_reverse = reverse;
-      }
-
-      virtual Relation(B* to, std::string reverse)
-      {
-	this->_to = to;
-	this->_reverse = reverse;
       }
 
       virtual ~Relation()
       {
       }
 
-      A& set(B* to, bool set_reverse=true)
+    protected:
+      static const Cardinality __cardinality__ = NONE;
+      std::string _reverse;
+      L _from; // XXX replace by Operand
+      R _to; // XXX replace by Operand
+    };
+
+    template<class L, class R, class A, class B>
+    class ExternRelation : public Relation<L,R,A,B>
+    {
+    public:
+      ExternRelation(A* from, std::string reverse, Position)
       {
-	this->_to = to;
+	this->_from.set(from);
+	this->_reverse = reverse;
+      }
+
+      ExternRelation(B* to, std::string reverse, Position)
+      {
+	this->_to.set(to);
+	this->_reverse = reverse;
+      }
+
+      A* set(B* entity, bool set_reverse=true)
+      {
+	this->_to.add(entity);
 	if (set_reverse == true && !this->_reverse.empty())
-	  ((Relation<B,A>*)this->_to->call(this->_reverse))->set(this->_from, false);
-	return *(this->_from);
+	  ((ExternRelation<R,L,B,A>*)entity->call(this->_reverse))->set(this->_from.get(), false);
+	return this->_from.get();
       }
 
       B* get()
       {
-	return this->_to;
+	return this->_to.get();
       }
-
-    protected:
-      static const Cardinality __cardinality__ = NONE;
-      std::string _reverse;
-      A* _from; // XXX replace by Operand
-      B* _to; // XXX replace by Operand
     };
 
-    template<class A>
-    class SelfRelation : public Relation<A,A>
+    template<class L, class A>
+    class SelfRelation : public Relation<L,L,A,A>
     {
     public:
       SelfRelation(A* entity, std::string reverse, Position position) : _position(position)
       {
-	if (this->_position & LEFT) {
-	  this->_from = entity;
-	}
-	else if (this->_position & RIGHT) {
-	  this->_to = entity;
-	}
+	if (this->_position & LEFT)
+	  this->_from.set(entity);
+	else if (this->_position & RIGHT)
+	  this->_to.set(entity);
 	this->_reverse = reverse;
       }
 
@@ -94,25 +91,25 @@ namespace upo
 	A* main;
 	if (this->_position & LEFT)
 	  {
-	    main = this->_from;
-	    this->_to = entity;
+	    main = this->_from.get();
+	    this->_to.add(entity);
 	  }
 	else if (this->_position & RIGHT)
 	  {
-	    main = this->_to;
-	    this->_from = entity;
+	    main = this->_to.get();
+	    this->_from.add(entity);
 	  }
 	if (set_reverse == true && !this->_reverse.empty())
-	  ((Relation<Q,Q>*)entity->call(this->_reverse))->set(main, false);
+	  ((SelfRelation<L,A>*)entity->call(this->_reverse))->set(main, false);
 	return main;
       }
 
       A* get()
       {
 	if (this->_position & LEFT)
-	  return this->_to;
+	  return this->_to.get();
 	else if (this->_position & RIGHT)
-	  return this->_from;
+	  return this->_from.get();
       }
 
     protected:
@@ -120,38 +117,21 @@ namespace upo
     };
 
     template<class A, class B>
-    class OneToOne : public Relation<A,B>
+    struct Extern
     {
-    protected:
-      static const Cardinality __cardinality__ = Relation<A,B>::__cardinality__ | RUNIQUE | LUNIQUE;
-      HAS_ONE(A) _from;
-      HAS_ONE(B) _to;
+      typedef ExternRelation<ONE(A),ONE(B),A,B> OneToOne;
+      typedef ExternRelation<ONE(A),MANY(B),A,B> OneToMany;
+      typedef ExternRelation<MANY(A),ONE(B),A,B> ManyToOne;
+      typedef ExternRelation<MANY(A),MANY(B),A,B> ManyToMany;
     };
 
-    template<class A, class B>
-    class OneToMany : public Relation<A,B>
+    template<class A>
+    struct Self
     {
-    protected:
-      static const Cardinality __cardinality__ = Relation<A,B>::__cardinality__ | RUNIQUE;
-      HAS_ONE(A) _from;
-      HAS_MANY(B) _to;
-    };
-
-    template<class A, class B>
-    class ManyToOne : public Relation<A,B>
-    {
-    protected:
-      static const Cardinality __cardinality__ = Relation<A,B>::__cardinality__ | LUNIQUE;
-      HAS_MANY(A) _from;
-      HAS_ONE(B) _to;
-    };
-
-    template<class A, class B>
-    class ManyToMany : public Relation<A,B>
-    {
-    protected:
-      HAS_MANY(A) _from;
-      HAS_MANY(B) _to;
+      typedef SelfRelation<ONE(A),A> OneToOne;
+      typedef ExternRelation<ONE(A),MANY(A),A,A> OneToMany;
+      typedef ExternRelation<MANY(A),ONE(A),A,A> ManyToOne;
+      typedef SelfRelation<MANY(A),A> ManyToMany;
     };
   }
 }

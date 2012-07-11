@@ -8,7 +8,6 @@ namespace upo
   namespace orm
   {
     enum Definition {
-      NONE = 0,
       REQUIRED = 1, // Column is NOT NULL
       UNIQUE   = 2  // Column is UNIQUE
     };
@@ -17,7 +16,7 @@ namespace upo
     class Attribute
     {
     public:
-      virtual Attribute(T d_val, Definition def=NONE, int length=0, int decimals=0) :
+      Attribute(T d_val, Definition def=0, int length=0, int decimals=0) :
 	_value(d_val), _length(length), _decimals(decimals)
       {}
       virtual ~Attribute() {}
@@ -59,14 +58,14 @@ namespace upo
     class FStrAttribute : Attribute<std::string>
     {
     public:
-      FStrAttribute(std::string d_val, int length=24, Definition def=NONE); // Call parent's ctor
+      FStrAttribute(std::string d_val, int length=24, Definition def=0); // Call parent's ctor
       static const std::string type = "CHAR";
     };
 
     class StrAttribute : Attribute<std::string>
     {
     public:
-      StrAttribute(std::string d_val, int length=256, Definition def=NONE); // Call parent's ctor
+      StrAttribute(std::string d_val, int length=256, Definition def=0); // Call parent's ctor
       static const std::string type = "VARCHAR";
     };
 

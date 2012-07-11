@@ -22,9 +22,14 @@ bool Entity::commit()
   // Commits the changes made to the entity into the DB
 }
 
-bool Entity::delete()
+bool Entity::drop()
 {
   // Remove the entity from the DB
+}
+
+void* Entity::call(string name)
+{
+  return this->name_table[name];
 }
 
 Entity* Entity::get()

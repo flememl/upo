@@ -1,26 +1,35 @@
 #ifndef __UPORM_ENTITY__
 # define __UPORM_ENTITY__
 
-# include "uporm/attribute.hpp"
+# include <string>
+# include <map>
+//# include "uporm/attribute.hpp"
 
 namespace upo
 {
   namespace orm
   {
+# define REGISTER_RELATION(X,Y,N,C,R) X = new Y(this, R, C);	\
+    this->name_table.insert(std::pair<std::string,void*>(N, X))
+
     class Entity
     {
     public:
-      virtual Entity();
-      virtual Entity(int id);
+      Entity();
+      Entity(int id);
       virtual ~Entity();
       virtual bool commit();
-      virtual bool delete();
+      virtual bool drop();
+      virtual void* call(std::string name);
 
       // static methods
-      static virtual Entity* get();
+      static Entity* get();
 
       // attributes
-      UIntAttribute id;
+      //UIntAttribute id;
+
+    protected:
+      std::map<std::string,void*> name_table;
     };
   }
 }
