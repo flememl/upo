@@ -29,7 +29,7 @@ class ParentOf : public OneToMany<Person,Person> { };
 class ChildOf : public ManyToOne<Person,Person>
 {
   // LMANDATORY specifies that a Person has to be the child of someone
-  static const __cardinality__ = OneToMany<Person,Person>::__cardinality__ | LMANDATORY;
+  static const Cardinality __cardinality__ = OneToMany<Person,Person>::__cardinality__ | LMANDATORY;
 };
 ```
 
